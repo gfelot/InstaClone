@@ -15,9 +15,21 @@ class TableViewController: UITableViewController {
     var userIDs = [""]
     var isFollowing = ["":false]
     
+    var refresher:UIRefreshControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        refresher = UIRefreshControl()
+        
+        refresher.attributedTitle = NSAttributedString(string: "Refreshing Data")
+        refresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(refresher)
+        
+        refresh()
+    }
+    
+    func refresh() {
         let query = PFUser.query()
         query?.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
             guard let users = objects else {
@@ -48,12 +60,14 @@ class TableViewController: UITableViewController {
                         }
                         if self.isFollowing.count == self.usernames.count {
                             self.tableView.reloadData()
+                            self.refresher.endRefreshing()
                         }
                     })
                 }
             }
             
         })
+        
     }
     
     @IBAction func logout(sender: AnyObject) {
