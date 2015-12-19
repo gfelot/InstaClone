@@ -30,10 +30,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
     }
-
+    
     override func viewDidAppear(animated: Bool) {
-        if PFUser.currentUser() != nil {
-            print(PFUser.currentUser())
+        if PFUser.currentUser()?.username != nil {
             self.performSegueWithIdentifier("login", sender: self)
         }
         
